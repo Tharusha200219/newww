@@ -1,63 +1,55 @@
-// services/driverService.js
-import { Driver } from '../models/Driver.js';
+// src/services/driverService.jsx
+import axios from 'axios';
 
-class DriverService {
-    async createDriver(driverData) {
-        try {
-            const newDriver = new Driver(driverData);
-            return await newDriver.save();
-        } catch (error) {
-            throw new Error(`Error creating driver: ${error.message}`);
-        }
+// Base URL for your API (adjust this to match your backend URL)
+
+import { API_BASE_URL } from "../config/config";
+// Create a new driver
+export const createDriver = async (driverData) => {
+    try {
+        const response = await axios.post(API_BASE_URL, driverData);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || { message: 'Error creating driver' };
     }
+};
 
-    async getAllDrivers() {
-        try {
-            return await Driver.find();
-        } catch (error) {
-            throw new Error(`Error fetching drivers: ${error.message}`);
-        }
+// Get all drivers
+export const getAllDrivers = async () => {
+    try {
+        const response = await axios.get(API_BASE_URL);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || { message: 'Error fetching drivers' };
     }
+};
 
-    async getDriverById(id) {
-        try {
-            const driver = await Driver.findById(id);
-            if (!driver) {
-                throw new Error('Driver not found');
-            }
-            return driver;
-        } catch (error) {
-            throw new Error(`Error fetching driver: ${error.message}`);
-        }
+// Get a specific driver by ID
+export const getDriverById = async (id) => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/${id}`);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || { message: 'Error fetching driver' };
     }
+};
 
-    async updateDriver(id, driverData) {
-        try {
-            const driver = await Driver.findByIdAndUpdate(
-                id,
-                driverData,
-                { new: true, runValidators: true }
-            );
-            if (!driver) {
-                throw new Error('Driver not found');
-            }
-            return driver;
-        } catch (error) {
-            throw new Error(`Error updating driver: ${error.message}`);
-        }
+// Update a driver
+export const updateDriver = async (id, driverData) => {
+    try {
+        const response = await axios.put(`${API_BASE_URL}/${id}`, driverData);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || { message: 'Error updating driver' };
     }
+};
 
-    async deleteDriver(id) {
-        try {
-            const driver = await Driver.findByIdAndDelete(id);
-            if (!driver) {
-                throw new Error('Driver not found');
-            }
-            return { message: 'Driver deleted successfully' };
-        } catch (error) {
-            throw new Error(`Error deleting driver: ${error.message}`);
-        }
+// Delete a driver
+export const deleteDriver = async (id) => {
+    try {
+        const response = await axios.delete(`${API_BASE_URL}/${id}`);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || { message: 'Error deleting driver' };
     }
-}
-
-export default new DriverService();
+};

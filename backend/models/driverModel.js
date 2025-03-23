@@ -1,4 +1,4 @@
-// models/Driver.js
+// models/driverModel.js
 import mongoose from "mongoose";
 
 const driverSchema = mongoose.Schema(
@@ -6,7 +6,6 @@ const driverSchema = mongoose.Schema(
         driver_id: {
             type: Number,
             required: false,
-            unique: true
         },
         full_name: {
             type: String,
@@ -23,7 +22,6 @@ const driverSchema = mongoose.Schema(
         license_number: {
             type: String,
             required: false,
-            unique: true
         },
         year_of_experience: {
             type: String,
@@ -32,12 +30,12 @@ const driverSchema = mongoose.Schema(
         availability_status: {
             type: String,
             required: false,
-            enum: ['available', 'unavailable', 'on-trip']
-        }
+        },
     },
     {
         timestamps: true,
     }
 );
 
-export const Driver = mongoose.model('drivers', driverSchema);
+const Driver = mongoose.model('drivers', driverSchema);
+export default Driver;  // Changed to default export

@@ -1,14 +1,27 @@
-// routes/driverRoutes.js
 import express from 'express';
-import driverController from '../controllers/driverController.js';
+import {
+    createDriver,
+    getAllDrivers,
+    getDriverById,
+    updateDriver,
+    deleteDriver
+} from '../controllers/driverController.js'; // Adjust path based on your structure
 
 const router = express.Router();
 
-// Driver Routes
-router.post('/', driverController.createDriver);
-router.get('/', driverController.getAllDrivers);
-router.get('/:id', driverController.getDriverById);
-router.put('/:id', driverController.updateDriver);
-router.delete('/:id', driverController.deleteDriver);
+// Route to create a new driver
+router.post('/', createDriver);
+
+// Route to get all drivers
+router.get('/', getAllDrivers);
+
+// Route to get a specific driver by ID
+router.get('/:id', getDriverById);
+
+// Route to update a driver
+router.put('/:id', updateDriver);
+
+// Route to delete a driver
+router.delete('/:id', deleteDriver);
 
 export default router;

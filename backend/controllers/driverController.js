@@ -1,81 +1,65 @@
-// controllers/driverController.js
-import driverService from '../services/driverService.js';
+import Driver from '../models/driverModel.js'; // Adjust path based on your structure
 
-class DriverController {
-    async createDriver(req, res) {
-        try {
-            const driver = await driverService.createDriver(req.body);
-            res.status(201).json({
-                success: true,
-                data: driver
-            });
-        } catch (error) {
-            res.status(400).json({
-                success: false,
-                message: error.message
-            });
-        }
+// Create a new driver
+export const createDriver = async (req, res) => {
+    try {
+        const driver = new Driver(req.body);
+        const savedDriver = await driver.save();
+        res.status(201).json(savedDriver);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
     }
+};
 
-    async getAllDrivers(req, res) {
-        try {
-            const drivers = await driverService.getAllDrivers();
-            res.status(200).json({
-                success: true,
-                data: drivers
-            });
-        } catch (error) {
-            res.status(400).json({
-                success: false,
-                message: error.message
-            });
-        }
+// Get all drivers
+export const getAllDrivers = async (req, res) => {
+    try {
+        const drivers = await Driver.find();
+        res.status(200).json(drivers);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
+};
 
-    async getDriverById(req, res) {
-        try {
-            const driver = await driverService.getDriverById(req.params.id);
-            res.status(200).json({
-                success: true,
-                data: driver
-            });
-        } catch (error) {
-            res.status(404).json({
-                success: false,
-                message: error.message
-            });
+// Get driver by ID
+export const getDriverById = async (req, res) => {
+    try {
+        const driver = await Driver.findById(req.params.id);
+        if (!driver) {
+            return res.status(404).json({ message: 'Driver not found' });
         }
+        res.status(200).json(driver);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
+};
 
-    async updateDriver(req, res) {
-        try {
-            const driver = await driverService.updateDriver(req.params.id, req.body);
-            res.status(200).json({
-                success: true,
-                data: driver
-            });
-        } catch (error) {
-            res.status(400).json({
-                success: false,
-                message: error.message
-            });
+// Update driver
+export const updateDriver = async (req, res) => {
+    try {
+        const driver = await Driver.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true, runValidators: true }
+        );
+        if (!driver) {
+            return res.status(404).json({ message: 'Driver not found' });
         }
+        res.status(200).json(driver);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
     }
+};
 
-    async deleteDriver(req, res) {
-        try {
-            const result = await driverService.deleteDriver(req.params.id);
-            res.status(200).json({
-                success: true,
-                message: result.message
-            });
-        } catch (error) {
-            res.status(400).json({
-                success: false,
-                message: error.message
-            });
+// Delete driver
+export const deleteDriver = async (req, res) => {
+    try {
+        const driver = await Driver.findByIdAndDelete(req.params.id);
+        if (!driver) {
+            return res.status(404).json({ message: 'Driver not found' });
         }
+        res.status(200).json({ message: 'Driver deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
-}
-
-export default new DriverController();
+};
