@@ -1,9 +1,10 @@
-// server.js (or your main backend file)
+// server.js
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import vehicleManagementRoutes from './routes/vehicleManagementRoute.js';
+import driverRoutes from './routes/driverManagementRoute.js';
 
 dotenv.config();
 
@@ -11,10 +12,11 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: 'http://localhost:5173', // Allow your frontend origin
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed methods
-  allowedHeaders: ['Content-Type'], // Specify allowed headers
+  origin: ['http://localhost:5173', 'http://localhost:5174'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type'],
 }));
+
 app.use(express.json());
 
 // Routes
