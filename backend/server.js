@@ -19,6 +19,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api/vehicleManagement', vehicleManagementRoutes);
+app.use('/api/drivers', driverRoutes);
 
 // MongoDB Connection
 mongoose
