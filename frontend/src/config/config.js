@@ -1,3 +1,2 @@
-// config/config.js
-const API_BASE_URL = 'http://localhost:3000/api'; // Relative path, proxied to backend
+const API_BASE_URL = 'http://localhost:5000/api';
 export { API_BASE_URL };
