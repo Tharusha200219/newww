@@ -1,5 +1,5 @@
 import React from 'react';
-import DriverTableView from '../components/DriverTableView'; // Adjust path based on your structure
+import DriverTableView from '../components/driver/driverTableView'; // Adjust path based on your structure
 
 const Driver = () => {
   return (

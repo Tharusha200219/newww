@@ -25,7 +25,7 @@ app.use('/uploads', express.static(path.join(path.resolve(), 'uploads')));
 
 // Routes
 app.use('/api/vehicleManagement', vehicleManagementRoutes);
-
+app.use('/api/driver', driverRoutes);
 // MongoDB Connection
 mongoose
   .connect(process.env.MONGO_URI)

@@ -1,9 +1,10 @@
 // src/services/driverService.jsx
 import axios from 'axios';
 
+const API_BASE_URL = 'http://localhost:5001/api/driver';
+
 // Base URL for your API (adjust this to match your backend URL)
 
-import { API_BASE_URL } from "../config/config";
 // Create a new driver
 export const createDriver = async (driverData) => {
     try {
