@@ -4,46 +4,43 @@ const vehicleManagemntschema = mongoose.Schema(
     {
         vehicle_id : {
             type : Number,
-            required:false,
+            required:true,
         },
         vehicle_type : {
             type : String,
-            required : false,
+            required : true,
         },
 
         brand: {
             type : String,
-            required : false,
+            required : true,
         },
         
         model : {
             type : String,
-            required : false,
+            required : true,
         },
         year_of_manufacture: {
             type : String,
-            required : false,
+            required : true,
         },
         seating_capacity : {
             type : String,
-            required : false,
+            required : true,
         },
         fuel_type : {
             type : String,
-            required : false,
+            required : true,
         },
         transmission_type : {
             type : String,
-            required : false,
+            required : true,
         },
         image_upload : {
             type : String,
-            required : false,
+            required : true,
         },
       
-
-
-
     },
     {
         timestamps: true,

@@ -1,127 +1,94 @@
+// src/components/vehicleManagementView/ViewVehicleModal.jsx
 import React from 'react';
 
-const VehicleViewModal = ({ vehicle, onClose }) => {
+const ViewVehicleModal = ({ isOpen, onClose, vehicle }) => {
+  if (!isOpen || !vehicle) return null;
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 transition-opacity duration-300 ease-in-out">
-      <div className="bg-white rounded-2xl p-8 max-w-lg w-full space-y-6 shadow-2xl transform transition-all duration-500 scale-95 hover:scale-100">
-        {/* Header Section */}
-        <div className="flex justify-between items-center">
-          <h3 className="text-3xl font-extrabold text-primeDark">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white rounded-lg shadow-xl max-w-lg w-full mx-4 sm:mx-0 p-6 transform transition-all duration-300 scale-100">
+        {/* Modal Header */}
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-2xl font-bold text-gray-900">
             Vehicle Details
           </h3>
           <button
             onClick={onClose}
-            className="text-primeGray hover:text-primeDark focus:outline-none transition-colors duration-200"
+            className="text-gray-400 hover:text-gray-600 focus:outline-none"
           >
             <svg
               className="h-6 w-6"
-              xmlns="http://www.w3.org/2000/svg"
               fill="none"
-              viewBox="0 0 24 24"
               stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
             >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth="2"
                 d="M6 18L18 6M6 6l12 12"
-              />
+              ></path>
             </svg>
           </button>
         </div>
 
-        {/* Vehicle Details Section */}
-        <div className="space-y-6">
-          {/* Image Preview (if available) */}
-          {vehicle.image_upload && vehicle.image_upload !== 'N/A' ? (
-            <div className="relative">
+        {/* Modal Body */}
+        <div className="space-y-4">
+          {/* Image */}
+          {vehicle.image_upload && (
+            <div className="flex justify-center">
               <img
-                src={vehicle.image_upload}
-                alt="Vehicle"
-                className="w-full h-48 object-cover rounded-lg shadow-md"
+                src={`http://localhost:5001/${vehicle.image_upload}`}
+                alt={vehicle.model}
+                className="h-48 w-48 object-cover rounded-lg shadow-md"
+                onError={(e) => (e.target.src = '../../../assets/1.png')}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-lg"></div>
-            </div>
-          ) : (
-            <div className="w-full h-48 bg-gray-100 rounded-lg flex items-center justify-center shadow-md">
-              <p className="text-primeGray text-sm font-medium">No Image Available</p>
             </div>
           )}
 
-          {/* Details Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {/* Vehicle Details */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-semibold text-primeGray">
-                Vehicle ID
-              </label>
-              <p className="mt-1 text-base text-primeDark font-medium">
-                {vehicle.vehicle_id || 'N/A'}
-              </p>
+              <span className="text-sm font-semibold text-gray-500">Vehicle ID:</span>
+              <p className="text-lg text-gray-900">{vehicle.vehicle_id}</p>
             </div>
             <div>
-              <label className="block text-sm font-semibold text-primeGray">
-                Vehicle Type
-              </label>
-              <p className="mt-1 text-base text-primeDark font-medium">
-                {vehicle.vehicle_type || 'N/A'}
-              </p>
+              <span className="text-sm font-semibold text-gray-500">Type:</span>
+              <p className="text-lg text-gray-900">{vehicle.vehicle_type}</p>
             </div>
             <div>
-              <label className="block text-sm font-semibold text-primeGray">
-                Brand
-              </label>
-              <p className="mt-1 text-base text-primeDark font-medium">
-                {vehicle.brand || 'N/A'}
-              </p>
+              <span className="text-sm font-semibold text-gray-500">Brand:</span>
+              <p className="text-lg text-gray-900">{vehicle.brand}</p>
             </div>
             <div>
-              <label className="block text-sm font-semibold text-primeGray">
-                Model
-              </label>
-              <p className="mt-1 text-base text-primeDark font-medium">
-                {vehicle.model || 'N/A'}
-              </p>
+              <span className="text-sm font-semibold text-gray-500">Model:</span>
+              <p className="text-lg text-gray-900">{vehicle.model}</p>
             </div>
             <div>
-              <label className="block text-sm font-semibold text-primeGray">
-                Year of Manufacture
-              </label>
-              <p className="mt-1 text-base text-primeDark font-medium">
-                {vehicle.year_of_manufacture || 'N/A'}
-              </p>
+              <span className="text-sm font-semibold text-gray-500">Year:</span>
+              <p className="text-lg text-gray-900">{vehicle.year_of_manufacture}</p>
             </div>
             <div>
-              <label className="block text-sm font-semibold text-primeGray">
-                Seating Capacity
-              </label>
-              <p className="mt-1 text-base text-primeDark font-medium">
-                {vehicle.seating_capacity || 'N/A'}
-              </p>
+              <span className="text-sm font-semibold text-gray-500">Capacity:</span>
+              <p className="text-lg text-gray-900">{vehicle.seating_capacity}</p>
             </div>
             <div>
-              <label className="block text-sm font-semibold text-primeGray">
-                Fuel Type
-              </label>
-              <p className="mt-1 text-base text-primeDark font-medium">
-                {vehicle.fuel_type || 'N/A'}
-              </p>
+              <span className="text-sm font-semibold text-gray-500">Fuel Type:</span>
+              <p className="text-lg text-gray-900">{vehicle.fuel_type}</p>
             </div>
             <div>
-              <label className="block text-sm font-semibold text-primeGray">
-                Transmission Type
-              </label>
-              <p className="mt-1 text-base text-primeDark font-medium">
-                {vehicle.transmission_type || 'N/A'}
-              </p>
+              <span className="text-sm font-semibold text-gray-500">Transmission:</span>
+              <p className="text-lg text-gray-900">{vehicle.transmission_type}</p>
             </div>
           </div>
         </div>
 
-        {/* Footer Section */}
-        <div className="flex justify-end">
+        {/* Modal Footer */}
+        <div className="mt-6 flex justify-end">
           <button
             onClick={onClose}
-            className="px-6 py-2 bg-primeTeal text-primeDark font-semibold rounded-lg shadow-sm hover:bg-primeTeal/80 focus:outline-none focus:ring-2 focus:ring-primeTeal transition-all duration-300 ease-in-out transform hover:scale-105"
+            className="bg-gradient-to-r from-gray-500 to-gray-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:from-gray-600 hover:to-gray-700 transition duration-300"
           >
             Close
           </button>
@@ -131,4 +98,4 @@ const VehicleViewModal = ({ vehicle, onClose }) => {
   );
 };
 
-export default VehicleViewModal;
+export default ViewVehicleModal;

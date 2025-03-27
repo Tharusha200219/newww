@@ -1,19 +1,15 @@
-// App.jsx
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import VehicleManagementTableView from './pages/vehicleManagement';
-import VehicleManagementCreate from './components/vehicleManagement/vehicleManagementCreate/vehicleManagementCreate'
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import CreateVehicle from './components/vehicleManagement/vehicleManagementCreate/CreateVehicle';
+import VehicleTable from './components/vehicleManagement/vehicleManagementTableView/VehicleTable';
+
 function App() {
   return (
-    <Router>
-      <div className="App">
-        <Routes>
-          <Route path="/vehicleManagement" element={<VehicleManagementTableView />} />
-          <Route path="/Vehiclemanagementcreate" element={<VehicleManagementCreate />} />
-         
-        </Routes>
-      </div>
-    </Router>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<VehicleTable />} />
+        <Route path="/create-vehicle" element={<CreateVehicle />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

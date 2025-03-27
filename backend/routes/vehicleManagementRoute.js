@@ -1,13 +1,20 @@
-import express from "express";
-import vehicleManagementController from "../controllers/vehicleManagementController.js";
+// routes/vehicleManagementRoute.js
+import express from 'express';
+import {
+    createVehicle,
+    getAllVehicles,
+    getVehicleById,
+    updateVehicle,
+    deleteVehicle
+} from '../controllers/vehicleManagementController.js';
 
 const router = express.Router();
 
-
-router.post("/create", vehicleManagementController.createVehicleManagement);
-router.get("/", vehicleManagementController.getVehicleManagement);
-router.get("/:id", vehicleManagementController.getVehicleManagementById);
-router.put("/:id", vehicleManagementController.updateVehicleManagement);
-router.delete("/:id", vehicleManagementController.deleteVehicleManagement);
+// Routes
+router.post('/', createVehicle);
+router.get('/', getAllVehicles);
+router.get('/:id', getVehicleById);
+router.put('/:id', updateVehicle);
+router.delete('/:id', deleteVehicle);
 
 export default router;

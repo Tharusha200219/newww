@@ -1,5 +1,5 @@
 import React from "react";
-import VehicleManagementTable from "../components/vehicleManagement/vehicleManagementTableView/vehicleManagementTableView";
+import VehicleManagementTable from "../components/vehicleManagement/vehicleManagementTableView/VehicleTable";
 const supplier_home = () => {
   return (
     <div>

@@ -5,6 +5,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import vehicleManagementRoutes from './routes/vehicleManagementRoute.js';
 import driverRoutes from './routes/driverManagementRoute.js';
+import path from 'path';
 
 dotenv.config();
 
@@ -19,9 +20,11 @@ app.use(cors({
 
 app.use(express.json());
 
+// Serve static files from uploads folder
+app.use('/uploads', express.static(path.join(path.resolve(), 'uploads')));
+
 // Routes
 app.use('/api/vehicleManagement', vehicleManagementRoutes);
-app.use('/api/drivers', driverRoutes);
 
 // MongoDB Connection
 mongoose
@@ -29,5 +32,5 @@ mongoose
   .then(() => console.log('MongoDB connected'))
   .catch((err) => console.error('MongoDB connection error:', err));
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
