@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { driverService } from '../../../services/driverSrvice'; // Adjust path
+import * as driverService from '../../../services/driverSrvice';
 
-const DriverCreate = () => {
+const DriverCreateModal = ({ onClose, onCreate }) => {
   const [formData, setFormData] = useState({
     driver_id: '',
     full_name: '',
@@ -11,208 +11,114 @@ const DriverCreate = () => {
     year_of_experience: '',
     availability_status: '',
   });
-
   const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
-  const [formErrors, setFormErrors] = useState({});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-    setFormErrors((prevErrors) => ({
-      ...prevErrors,
-      [name]: '',
-    }));
-  };
-
-  const validateForm = () => {
-    const errors = {};
-    if (!formData.full_name) errors.full_name = 'Full Name is required';
-    if (!formData.contact_number) errors.contact_number = 'Contact Number is required';
-    if (!formData.license_number) errors.license_number = 'License Number is required';
-    return errors;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
-    setSuccess(null);
-    setFormErrors({});
-
-    const validationErrors = validateForm();
-    if (Object.keys(validationErrors).length > 0) {
-      setFormErrors(validationErrors);
-      return;
-    }
-
     try {
-      const response = await driverService.createDriver(formData);
-      setSuccess('Driver created successfully!');
-      setFormData({
-        driver_id: '',
-        full_name: '',
-        contact_number: '',
-        email: '',
-        license_number: '',
-        year_of_experience: '',
-        availability_status: '',
-      });
+      await driverService.createDriver(formData);
+      onCreate(); // Refresh the driver list
+      onClose(); // Close the modal
     } catch (err) {
-      setError(err.message || 'Failed to create driver.');
+      setError(err.message || 'Error creating driver');
     }
   };
 
   return (
-    <div className="min-h-screen bg-primeLight flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl w-full space-y-8 bg-white p-10 rounded-2xl shadow-2xl transform transition-all hover:shadow-3xl duration-500">
-        <div className="text-center">
-          <h2 className="text-4xl font-extrabold text-primeDark tracking-tight">
-            Add New Driver
-          </h2>
-          <p className="mt-3 text-sm text-primeGray leading-relaxed">
-            Provide the details below to add a new driver to the system.
-          </p>
-        </div>
-
-        {success && (
-          <div className="bg-green-50 border-l-4 border-green-500 text-green-800 p-4 rounded-lg shadow-md animate-fade-in">
-            <p className="font-medium">{success}</p>
+    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
+      <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+        <h2 className="text-2xl font-bold text-primeDark mb-4">Create New Driver</h2>
+        {error && <p className="text-red-500 mb-4">{error}</p>}
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label className="block text-primeDark mb-2">Driver ID</label>
+            <input
+              type="number"
+              name="driver_id"
+              value={formData.driver_id}
+              onChange={handleChange}
+              className="w-full p-2 border rounded"
+            />
           </div>
-        )}
-        {error && (
-          <div className="bg-red-50 border-l-4 border-red-500 text-red-800 p-4 rounded-lg shadow-md animate-fade-in">
-            <p className="font-medium">{error}</p>
+          <div className="mb-4">
+            <label className="block text-primeDark mb-2">Full Name</label>
+            <input
+              type="text"
+              name="full_name"
+              value={formData.full_name}
+              onChange={handleChange}
+              className="w-full p-2 border rounded"
+              required
+            />
           </div>
-        )}
-
-        <form className="mt-8 space-y-8" onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 gap-y-6 gap-x-6 sm:grid-cols-2">
-            <div>
-              <label htmlFor="driver_id" className="block text-sm font-semibold text-primeDark">
-                Driver ID
-              </label>
-              <input
-                id="driver_id"
-                name="driver_id"
-                type="number"
-                value={formData.driver_id}
-                onChange={handleChange}
-                className="mt-2 block w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primeTeal focus:border-primeTeal sm:text-sm transition-all duration-300 ease-in-out hover:border-primeDark"
-                placeholder="Enter Driver ID"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="full_name" className="block text-sm font-semibold text-primeDark">
-                Full Name <span className="text-red-500">*</span>
-              </label>
-              <input
-                id="full_name"
-                name="full_name"
-                type="text"
-                value={formData.full_name}
-                onChange={handleChange}
-                className={`mt-2 block w-full px-4 py-3 bg-gray-50 border ${formErrors.full_name ? 'border-red-500' : 'border-gray-200'} rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primeTeal focus:border-primeTeal sm:text-sm transition-all duration-300 ease-in-out hover:border-primeDark`}
-                placeholder="e.g., John Doe"
-              />
-              {formErrors.full_name && (
-                <p className="mt-2 text-sm text-red-500 animate-fade-in">{formErrors.full_name}</p>
-              )}
-            </div>
-
-            <div>
-              <label htmlFor="contact_number" className="block text-sm font-semibold text-primeDark">
-                Contact Number <span className="text-red-500">*</span>
-              </label>
-              <input
-                id="contact_number"
-                name="contact_number"
-                type="text"
-                value={formData.contact_number}
-                onChange={handleChange}
-                className={`mt-2 block w-full px-4 py-3 bg-gray-50 border ${formErrors.contact_number ? 'border-red-500' : 'border-gray-200'} rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primeTeal focus:border-primeTeal sm:text-sm transition-all duration-300 ease-in-out hover:border-primeDark`}
-                placeholder="e.g., +1234567890"
-              />
-              {formErrors.contact_number && (
-                <p className="mt-2 text-sm text-red-500 animate-fade-in">{formErrors.contact_number}</p>
-              )}
-            </div>
-
-            <div>
-              <label htmlFor="email" className="block text-sm font-semibold text-primeDark">
-                Email
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                className="mt-2 block w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primeTeal focus:border-primeTeal sm:text-sm transition-all duration-300 ease-in-out hover:border-primeDark"
-                placeholder="e.g., john.doe@example.com"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="license_number" className="block text-sm font-semibold text-primeDark">
-                License Number <span className="text-red-500">*</span>
-              </label>
-              <input
-                id="license_number"
-                name="license_number"
-                type="text"
-                value={formData.license_number}
-                onChange={handleChange}
-                className={`mt-2 block w-full px-4 py-3 bg-gray-50 border ${formErrors.license_number ? 'border-red-500' : 'border-gray-200'} rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primeTeal focus:border-primeTeal sm:text-sm transition-all duration-300 ease-in-out hover:border-primeDark`}
-                placeholder="e.g., DL123456"
-              />
-              {formErrors.license_number && (
-                <p className="mt-2 text-sm text-red-500 animate-fade-in">{formErrors.license_number}</p>
-              )}
-            </div>
-
-            <div>
-              <label htmlFor="year_of_experience" className="block text-sm font-semibold text-primeDark">
-                Years of Experience
-              </label>
-              <input
-                id="year_of_experience"
-                name="year_of_experience"
-                type="text"
-                value={formData.year_of_experience}
-                onChange={handleChange}
-                className="mt-2 block w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primeTeal focus:border-primeTeal sm:text-sm transition-all duration-300 ease-in-out hover:border-primeDark"
-                placeholder="e.g., 5"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="availability_status" className="block text-sm font-semibold text-primeDark">
-                Availability Status
-              </label>
-              <select
-                id="availability_status"
-                name="availability_status"
-                value={formData.availability_status}
-                onChange={handleChange}
-                className="mt-2 block w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primeTeal focus:border-primeТеal sm:text-sm transition-all duration-300 ease-in-out hover:border-primeDark"
-              >
-                <option value="">Select Status</option>
-                <option value="Available">Available</option>
-                <option value="Unavailable">Unavailable</option>
-              </select>
-            </div>
+          <div className="mb-4">
+            <label className="block text-primeDark mb-2">Contact Number</label>
+            <input
+              type="text"
+              name="contact_number"
+              value={formData.contact_number}
+              onChange={handleChange}
+              className="w-full p-2 border rounded"
+            />
           </div>
-
-          <div>
+          <div className="mb-4">
+            <label className="block text-primeDark mb-2">Email</label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full p-2 border rounded"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-primeDark mb-2">License Number</label>
+            <input
+              type="text"
+              name="license_number"
+              value={formData.license_number}
+              onChange={handleChange}
+              className="w-full p-2 border rounded"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-primeDark mb-2">Years of Experience</label>
+            <input
+              type="text"
+              name="year_of_experience"
+              value={formData.year_of_experience}
+              onChange={handleChange}
+              className="w-full p-2 border rounded"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-primeDark mb-2">Availability Status</label>
+            <input
+              type="text"
+              name="availability_status"
+              value={formData.availability_status}
+              onChange={handleChange}
+              className="w-full p-2 border rounded"
+            />
+          </div>
+          <div className="flex justify-end space-x-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 bg-gray-300 text-primeDark rounded hover:bg-gray-400"
+            >
+              Cancel
+            </button>
             <button
               type="submit"
-              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-md text-sm font-semibold text-white bg-gradient-to-r from-primeTeal to-primeDark hover:from-primeDark hover:to-primeTeal focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primeTeal transition-all duration-300 ease-in-out transform hover:scale-105"
+              className="px-4 py-2 bg-primeTeal text-primeDark rounded hover:bg-primeTeal/80"
             >
-              Add Driver
+              Create
             </button>
           </div>
         </form>
@@ -221,4 +127,4 @@ const DriverCreate = () => {
   );
 };
 
-export default DriverCreate;
+export default DriverCreateModal;

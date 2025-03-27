@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import * as driverService from '../../../services/driverSrvice'; // Corrected path
-import DriverViewModal from '../driverViewModal/driverViewModal'; // Adjusted path
-import DriverUpdateModal from '../driverUpdate/driverUpdateModal'; // Adjusted path
+import * as driverService from '../../../services/driverSrvice';
+import DriverViewModal from '../driverViewModal/driverViewModal';
+import DriverUpdateModal from '../driverUpdate/driverUpdateModal';
+import DriverCreateModal from '../driverCreate/driverCreate'; // New import
 
 const DriverTableView = () => {
   const [drivers, setDrivers] = useState([]);
@@ -11,6 +12,7 @@ const DriverTableView = () => {
   const [selectedDriver, setSelectedDriver] = useState(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false); // New state for create modal
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [driversPerPage] = useState(5);
@@ -56,9 +58,14 @@ const DriverTableView = () => {
     setIsUpdateModalOpen(true);
   };
 
+  const handleCreate = () => {
+    setIsCreateModalOpen(true); // Open create modal
+  };
+
   const closeModals = () => {
     setIsViewModalOpen(false);
     setIsUpdateModalOpen(false);
+    setIsCreateModalOpen(false); // Close create modal
     setSelectedDriver(null);
   };
 
@@ -112,28 +119,36 @@ const DriverTableView = () => {
           <h2 className="text-4xl font-extrabold text-primeDark tracking-tight">
             Driver Management
           </h2>
-          <div className="relative w-full sm:w-auto">
-            <input
-              type="text"
-              placeholder="Search drivers by ID, name, or email..."
-              value={searchTerm}
-              onChange={handleSearch}
-              className="w-full sm:w-80 pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primeTeal focus:border-primeTeal sm:text-sm transition-all duration-300 ease-in-out hover:border-primeDark"
-            />
-            <svg
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-primeGray"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+            <div className="relative w-full sm:w-auto">
+              <input
+                type="text"
+                placeholder="Search drivers by ID, name, or email..."
+                value={searchTerm}
+                onChange={handleSearch}
+                className="w-full sm:w-80 pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-primeTeal focus:border-primeTeal sm:text-sm transition-all duration-300 ease-in-out hover:border-primeDark"
               />
-            </svg>
+              <svg
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-primeGray"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </div>
+            <button
+              onClick={handleCreate}
+              className="px-4 py-2 bg-green-500 text-primeLight font-semibold rounded-lg shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 transition-all duration-300 ease-in-out transform hover:scale-105"
+            >
+              Create Driver
+            </button>
           </div>
         </div>
 
@@ -185,7 +200,7 @@ const DriverTableView = () => {
                       ))}
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray- driver">
+                  <tbody className="bg-white divide-y divide-gray-200">
                     {currentDrivers.map((driver, index) => (
                       <tr
                         key={driver._id}
@@ -280,6 +295,9 @@ const DriverTableView = () => {
       )}
       {isUpdateModalOpen && selectedDriver && (
         <DriverUpdateModal driver={selectedDriver} onClose={closeModals} onUpdate={fetchDrivers} />
+      )}
+      {isCreateModalOpen && (
+        <DriverCreateModal onClose={closeModals} onCreate={fetchDrivers} />
       )}
     </div>
   );
