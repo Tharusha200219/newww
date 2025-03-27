@@ -72,6 +72,12 @@ export const createVehicle = async (req, res) => {
                 message: 'Vehicle created successfully',
                 vehicle: newVehicle
             });
+            return res.status(201).json({
+              // Added return here
+              message: 'Vehicle created successfully',
+              vehicle: newVehicle,
+            });
+
         } catch (error) {
             res.status(500).json({ message: 'Server error', error: error.message });
         }

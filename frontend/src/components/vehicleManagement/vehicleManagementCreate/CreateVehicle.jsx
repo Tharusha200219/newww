@@ -58,7 +58,7 @@ const CreateVehicle = () => {
         transmission_type: '',
       });
       setImage(null);
-      setTimeout(() => navigate('/vehicles'), 1500); // Redirect after 1.5s
+      setTimeout(() => navigate('/'), 5); // Redirect after 1.5s
     } catch (error) {
       setMessage(error.message || 'Error creating vehicle');
     } finally {
