@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import * as driverService from '../../../services/driverSrvice';
-import DriverViewModal from '../driverViewModal/driverViewModal'; // Adjust path
-import DriverUpdateModal from '../driverUpdate/driverUpdateModal'; // Adjust path
+import * as driverService from '../../../services/driverSrvice'; // Corrected path
+import DriverViewModal from '../driverViewModal/driverViewModal'; // Adjusted path
+import DriverUpdateModal from '../driverUpdate/driverUpdateModal'; // Adjusted path
 
 const DriverTableView = () => {
   const [drivers, setDrivers] = useState([]);
@@ -185,7 +185,7 @@ const DriverTableView = () => {
                       ))}
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody className="bg-white divide-y divide-gray- driver">
                     {currentDrivers.map((driver, index) => (
                       <tr
                         key={driver._id}
