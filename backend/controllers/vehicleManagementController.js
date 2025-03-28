@@ -68,26 +68,22 @@ export const createVehicle = async (req, res) => {
             const newVehicle = new vehicleManagement(vehicleData);
             await newVehicle.save();
 
-            res.status(201).json({
+            // Send only one response
+            return res.status(201).json({
                 message: 'Vehicle created successfully',
                 vehicle: newVehicle
             });
-            return res.status(201).json({
-              // Added return here
-              message: 'Vehicle created successfully',
-              vehicle: newVehicle,
-            });
 
         } catch (error) {
-            res.status(500).json({ message: 'Server error', error: error.message });
+            return res.status(500).json({ message: 'Server error', error: error.message });
         }
     });
 };
-
 export const getAllVehicles = async (req, res) => {
     try {
         const vehicles = await vehicleManagement.find();
         res.status(200).json(vehicles);
+        
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
