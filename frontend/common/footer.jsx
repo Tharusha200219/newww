@@ -1,6 +1,6 @@
 const Footer = () => {
     return (
-      <footer className="bg-gradient-to-r from-blue-900 to-blue-700 text-gray-200 py-10 w-full" style={{zIndex: 1000}}>
+      <footer className="bg-gradient-to-r from-blue-900 to-blue-700 text-gray-200 py-10 w-full" style={{zIndex: 10}}>
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             <div>
