@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { vehicleService } from '../../../services/vehicleService';
-import { useNavigate } from 'react-router-dom'; // For navigation after success
+import { useNavigate } from 'react-router-dom';
 
 const CreateVehicle = () => {
   const navigate = useNavigate();
@@ -15,24 +15,83 @@ const CreateVehicle = () => {
     transmission_type: '',
   });
   const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(''); // Added for image preview
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState({}); // Field-specific errors
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    // Real-time input filtering
+    if (name === 'vehicle_id' && value && (isNaN(value) || value < 0)) return;
+    if (name === 'vehicle_type' && value && !/^[a-zA-Z\s]*$/.test(value)) return;
+    if (name === 'brand' && value && !/^[a-zA-Z\s]*$/.test(value)) return;
+    if (name === 'model' && value && !/^[a-zA-Z0-9-]*$/.test(value)) return;
+
+    setFormData({ ...formData, [name]: value });
+
+    // Clear error when user starts typing valid input
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: '' }));
+    }
   };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file && ['image/jpeg', 'image/jpg', 'image/png'].includes(file.type)) {
       setImage(file);
+      setImagePreview(URL.createObjectURL(file)); // Set preview URL
+      setErrors((prev) => ({ ...prev, image_upload: '' }));
     } else {
-      setMessage('Please upload a valid image (JPEG, JPG, PNG)');
+      setImage(null);
+      setImagePreview(''); // Clear preview if invalid
+      setErrors((prev) => ({ ...prev, image_upload: 'Please upload a valid image (JPEG, JPG, PNG)' }));
     }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    // Vehicle ID: Cannot be negative
+    if (!formData.vehicle_id) {
+      newErrors.vehicle_id = 'Vehicle ID is required';
+    } else if (isNaN(formData.vehicle_id) || Number(formData.vehicle_id) < 0) {
+      newErrors.vehicle_id = 'Vehicle ID cannot be a negative number';
+    }
+
+    // Vehicle Type: Letters and spaces only
+    if (!formData.vehicle_type) {
+      newErrors.vehicle_type = 'Vehicle type is required';
+    } else if (!/^[a-zA-Z\s]+$/.test(formData.vehicle_type)) {
+      newErrors.vehicle_type = 'Vehicle type can only contain letters and spaces';
+    }
+
+    // Brand: Letters and spaces only
+    if (!formData.brand) {
+      newErrors.brand = 'Brand is required';
+    } else if (!/^[a-zA-Z\s]+$/.test(formData.brand)) {
+      newErrors.brand = 'Brand can only contain letters and spaces';
+    }
+
+    // Model: Letters, numbers, and hyphens only
+    if (!formData.model) {
+      newErrors.model = 'Model is required';
+    } else if (!/^[a-zA-Z0-9-]+$/.test(formData.model)) {
+      newErrors.model = 'Model can only contain letters, numbers, and hyphens';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) {
+      setMessage('Please fix the errors in the form');
+      return;
+    }
+
     setIsSubmitting(true);
     setMessage('');
 
@@ -58,6 +117,8 @@ const CreateVehicle = () => {
         transmission_type: '',
       });
       setImage(null);
+      setImagePreview(''); // Clear preview after submission
+      setErrors({});
       setTimeout(() => navigate('/'), 5); // Redirect after 1.5s
     } catch (error) {
       setMessage(error.message || 'Error creating vehicle');
@@ -99,9 +160,14 @@ const CreateVehicle = () => {
                 value={formData.vehicle_id}
                 onChange={handleChange}
                 placeholder="Enter Vehicle ID"
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                className={`mt-1 block w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${
+                  errors.vehicle_id ? 'border-red-500' : 'border-gray-300'
+                }`}
                 required
               />
+              {errors.vehicle_id && (
+                <p className="mt-1 text-sm text-red-600">{errors.vehicle_id}</p>
+              )}
             </div>
 
             {/* Vehicle Type */}
@@ -115,9 +181,14 @@ const CreateVehicle = () => {
                 value={formData.vehicle_type}
                 onChange={handleChange}
                 placeholder="e.g., Sedan, SUV"
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                className={`mt-1 block w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${
+                  errors.vehicle_type ? 'border-red-500' : 'border-gray-300'
+                }`}
                 required
               />
+              {errors.vehicle_type && (
+                <p className="mt-1 text-sm text-red-600">{errors.vehicle_type}</p>
+              )}
             </div>
 
             {/* Brand */}
@@ -131,9 +202,14 @@ const CreateVehicle = () => {
                 value={formData.brand}
                 onChange={handleChange}
                 placeholder="e.g., Toyota"
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                className={`mt-1 block w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${
+                  errors.brand ? 'border-red-500' : 'border-gray-300'
+                }`}
                 required
               />
+              {errors.brand && (
+                <p className="mt-1 text-sm text-red-600">{errors.brand}</p>
+              )}
             </div>
 
             {/* Model */}
@@ -147,9 +223,14 @@ const CreateVehicle = () => {
                 value={formData.model}
                 onChange={handleChange}
                 placeholder="e.g., Camry"
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                className={`mt-1 block w-full px-4 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${
+                  errors.model ? 'border-red-500' : 'border-gray-300'
+                }`}
                 required
               />
+              {errors.model && (
+                <p className="mt-1 text-sm text-red-600">{errors.model}</p>
+              )}
             </div>
 
             {/* Year of Manufacture */}
@@ -226,7 +307,7 @@ const CreateVehicle = () => {
             </div>
           </div>
 
-          {/* Image Upload */}
+          {/* Image Upload with Preview */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Vehicle Image
@@ -239,10 +320,26 @@ const CreateVehicle = () => {
               className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
               required
             />
-            {image && (
+            {imagePreview && (
+              <div className="mt-2">
+                <p className="text-sm text-gray-600">Selected Image Preview:</p>
+                <img
+                  src={imagePreview}
+                  alt="Vehicle Preview"
+                  className="h-20 w-20 object-cover rounded"
+                  onError={(e) => {
+                    e.target.src = '../../../assets/1.png'; // Fallback image
+                  }}
+                />
+              </div>
+            )}
+            {image && !imagePreview && (
               <p className="mt-2 text-sm text-gray-600">
                 Selected: {image.name}
               </p>
+            )}
+            {errors.image_upload && (
+              <p className="mt-1 text-sm text-red-600">{errors.image_upload}</p>
             )}
           </div>
 

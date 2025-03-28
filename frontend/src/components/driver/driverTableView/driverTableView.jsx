@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import * as driverService from '../../../services/driverSrvice';
 import DriverViewModal from '../driverViewModal/driverViewModal';
 import DriverUpdateModal from '../driverUpdate/driverUpdateModal';
-import DriverCreateModal from '../driverCreate/driverCreate'; // New import
+import DriverCreateModal from '../driverCreate/driverCreate';
 
 const DriverTableView = () => {
   const [drivers, setDrivers] = useState([]);
@@ -12,7 +12,7 @@ const DriverTableView = () => {
   const [selectedDriver, setSelectedDriver] = useState(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false); // New state for create modal
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [driversPerPage] = useState(5);
@@ -27,6 +27,7 @@ const DriverTableView = () => {
     try {
       setLoading(true);
       const data = await driverService.getAllDrivers();
+      console.log('Fetched drivers:', data); // Debug: Check the raw data
       setDrivers(data);
       setFilteredDrivers(data);
       setError(null);
@@ -59,13 +60,13 @@ const DriverTableView = () => {
   };
 
   const handleCreate = () => {
-    setIsCreateModalOpen(true); // Open create modal
+    setIsCreateModalOpen(true);
   };
 
   const closeModals = () => {
     setIsViewModalOpen(false);
     setIsUpdateModalOpen(false);
-    setIsCreateModalOpen(false); // Close create modal
+    setIsCreateModalOpen(false);
     setSelectedDriver(null);
   };
 
@@ -101,6 +102,19 @@ const DriverTableView = () => {
   const totalPages = Math.ceil(filteredDrivers.length / driversPerPage);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Helper function to format availability status
+  const formatAvailabilityStatus = (status) => {
+    if (!status) return 'N/A'; // Handle null, undefined, or empty string
+    const statusStr = status.toString().toLowerCase();
+    if (statusStr === 'available' || statusStr === 'true' || statusStr === 'yes' || statusStr === '1') {
+      return 'Available';
+    }
+    if (statusStr === 'unavailable' || statusStr === 'false' || statusStr === 'no' || statusStr === '0') {
+      return 'Unavailable';
+    }
+    return statusStr; // Display raw value if unexpected (for debugging)
+  };
 
   if (error) {
     return (
@@ -225,7 +239,7 @@ const DriverTableView = () => {
                           {driver.year_of_experience || 'N/A'}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-primeDark">
-                          {driver.availability_status || 'N/A'}
+                          {formatAvailabilityStatus(driver.availability_status)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm space-x-3">
                           <button
